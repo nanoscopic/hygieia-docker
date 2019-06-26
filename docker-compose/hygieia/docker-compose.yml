@@ -1,0 +1,151 @@
+version: '3.4'
+
+x-common-variables: &shared-vars
+  MONGO_PORT: tcp://172.16.238.11:27017
+  # SPRING_DATA_MONGODB_USERNAME: mongoroot
+  # SPRING_DATA_MONGODB_PASSWORD: mongopass
+      
+x-common-variables: &gitlab-vars
+  GITLAB_HOST: gitlab.test
+  GITLAB_PORT: 80
+  GITLAB_API_TOKEN: ${GITLAB_API_TOKEN}
+
+x-common-variables: &jenkins-vars
+  JENKINS_NAME: Test Jenkins
+  JENKINS_MASTER: http://jenkins.test:802
+  JENKINS_USERNAME: hygieia
+  JENKINS_API_KEY: ${JENKINS_API_KEY}
+
+services:
+  db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoroot
+      - MONGO_INITDB_ROOT_PASSWORD=mongopass
+    volumes:
+      - "hyg-mongo-config:/data/configdb"
+      - "hyg-mongo-db:/data/db"
+    networks:
+      default:
+        ipv4_address: 172.16.238.11
+        
+  db-setup:
+    build: c:/data/hyg/Hygieia/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoroot
+      - MONGO_INITDB_ROOT_PASSWORD=mongopass
+    depends_on:
+      - db
+      
+  api:
+    build: c:/data/hyg/Hygieia/api
+    image: hygieia-api
+    depends_on:
+      - db-setup
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_HOST=db
+    volumes:
+      - "hyg-mongo-db:/data/db"
+    # - ./logs:/hygieia/logs
+    networks:
+      default:
+        ipv4_address: 172.16.238.12
+  
+  api-audit:
+    build: c:/data/hyg/Hygieia/api-audit
+    image: hygieia-api-audit
+    depends_on:
+      - db-setup
+    ports:
+      - "8081:8080"
+  
+  ui:
+    build: c:/data/hyg/Hygieia/UI
+    image: hygieia-ui
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
+    environment:
+      API-HOST: api
+    
+  gitlab-feature-collector:
+    build: c:/data/hyg/Hygieia/collectors/feature/gitlab
+    image: hygieia-gitlab-feature-collector
+    depends_on:
+      - db-setup
+    environment:
+      <<: *shared-vars
+      <<: *gitlab-vars
+    networks:
+      - default
+      - gitlab_default
+      
+  gitlab-scm-collector:
+    build: c:/data/hyg/Hygieia/collectors/scm/gitlab
+    image: hygieia-gitlab-scm-collector
+    depends_on:
+      - db-setup
+    environment:
+      <<: *shared-vars
+    networks:
+      - default
+      - gitlab_default
+
+  jenkins-build-collector:
+    build: c:/data/hyg/Hygieia/collectors/build/jenkins
+    image: hygieia-jenkins-build-collector
+    depends_on:
+      - db-setup
+    environment:
+      <<: *shared-vars
+      <<: *jenkins-vars
+    networks:
+      - default
+      - jenkins_default
+
+  jenkins-codequality-collector:
+    build: c:/data/hyg/Hygieia/collectors/build/jenkins-codequality
+    image: hygieia-jenkins-codequality-collector
+    depends_on:
+      - db-setup
+    environment:
+      <<: *shared-vars
+      <<: *jenkins-vars
+    networks:
+      - default
+      - jenkins_default
+  
+  jenkins-cucumber-test-collector:
+    build: c:/data/hyg/Hygieia/collectors/build/jenkins-cucumber
+    image: hygieia-jenkins-cucumber-test-collector
+    depends_on:
+      - db-setup
+    environment:
+      <<: *shared-vars
+      <<: *jenkins-vars
+    networks:
+      - default
+      - jenkins_default
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"
+  gitlab_default:
+    external: true
+  jenkins_default:
+    external: true
+      
+volumes:
+  certs:
+  hyg-mongo-config:
+    external: true
+  hyg-mongo-db:
+    external: true

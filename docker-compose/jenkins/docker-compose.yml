@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  jenkins:
+    image: 'bitnami/jenkins:2'
+    hostname: 'jenkins.test'
+    ports:
+      - '802:8080'
+      - '4432:8443'
+      - '50000:50000'
+    volumes:
+      - 'c:/proj/data/jenkins:/bitnami'
+    networks:
+      default:
+        ipv4_address: 172.16.239.11
+        
+volumes:
+  jenkins_data:
+    driver: local
+    
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.239.0/24"

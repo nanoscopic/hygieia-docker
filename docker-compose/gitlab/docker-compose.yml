@@ -1,0 +1,37 @@
+version: '3.4'
+
+services:
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: 'gitlab.test'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.test'
+    ports:
+      - '80:80'
+      - '443:443'
+      - '22:22'
+    volumes:
+      - 'gitlab-config:/etc/gitlab'
+      - 'gitlab-logs:/var/log/gitlab'
+      - 'gitlab-data:/var/opt/gitlab'
+    networks:
+      default:
+        ipv4_address: 172.16.240.11
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+      - subnet: "172.16.240.0/24"
+
+volumes:
+  certs:
+  gitlab-config:
+    external: true
+  gitlab-data:
+    external: true
+  gitlab-logs:
+    external: true
