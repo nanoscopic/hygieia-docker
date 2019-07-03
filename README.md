@@ -3,14 +3,15 @@
 ## Building Hygieia in Windows
 
 ### Requirements
-  1. Install Docker for Windows
-	 2. Docker engine version 17.09.0+ or greater is required
-	 3. Run 'docker version' to see engine version
+
+1. Install Docker for Windows
+2. Docker engine version 17.09.0+ or greater is required
+3. Run 'docker version' to see engine version
 
 ### Steps
 
-  1. Run the build.bat script
-  2. Wait a while
+1. Run the build.bat script
+2. Wait a while
 
 After doing the above steps, the needed output artifacts will be in the "built" directory
 
@@ -22,13 +23,15 @@ To create the docker images for each component:
 ## Building Hygieia on Linux
     
 ### Requirements
- 1. Install docker-compose
-	 2. Docker engine version 17.09.0+ or greater is required
-	 3. Run 'docker version' to see engine version
+
+1. Install docker-compose
+2. Docker engine version 17.09.0+ or greater is required
+3. Run 'docker version' to see engine version
 
 ### Steps
-  1. Run the build.sh script
-  2. Wait a while
+
+1. Run the build.sh script
+2. Wait a while
 
 After doing the above steps, the needed output artifacts will be in the "built" directory
 
