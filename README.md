@@ -3,33 +3,20 @@
 ## Building Hygieia in Windows
 
 ### Requirements
- 1. Install Docker for Windows
+  1. Install Docker for Windows
 	 2. Docker engine version 17.09.0+ or greater is required
 	 3. Run 'docker version' to see engine version
- 2. Install Git for Windows
 
 ### Steps
 
-Create a build container:
+  1. Run the build.bat script
+  2. Wait a while
 
-    cd build_hygieia
-    checkout # Checkout code to c:\data\hyg
-    build # Create livxtrm/hy_build build container
-    
-Get bash in the container and do the build:
-
-    getbash
-    # Following in bash within container
-    cd /data/hygieia-core
-    mvn install package
-    cd /data/Hygieia
-    mvn install package
-
-After doing the above steps, you will have jars of the various components in c:\data\hyg\Hygieia\[component]\target\[component].jar
+After doing the above steps, the needed output artifacts will be in the "built" directory
 
 To create the docker images for each component:
 
-    cd c:\data\hyg\Hygieia
+    cd docker-compose\hygieia
     docker-compose build
 
 ## Building Hygieia on Linux
@@ -38,30 +25,16 @@ To create the docker images for each component:
  1. Install docker-compose
 	 2. Docker engine version 17.09.0+ or greater is required
 	 3. Run 'docker version' to see engine version
- 2. Install git
 
 ### Steps
+  1. Run the build.sh script
+  2. Wait a while
 
-Create a build container:
-
-    cd build_hygieia
-    ./checkout.sh # Checkout code to ./github
-    ./build.sh # Create livxtrm/hy_build build container
-    
-Get bash in the container and do the build:
-
-    ./getbash.sh
-    # Following in bash within container
-    cd /data/hygieia-core
-    mvn install package
-    cd /data/Hygieia
-    mvn install package
-
-After doing the above steps, you will have jars of the various components in ./github/Hygieia/[component]/target/[component].jar
+After doing the above steps, the needed output artifacts will be in the "built" directory
 
 To create the docker images for each component:
 
-    cd build_hygieia/github/Hygieia
+    cd docker-compose\hygieia
     docker-compose build
 
 ## Running Hygieia

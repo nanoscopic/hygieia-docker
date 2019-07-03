@@ -1,1 +1,0 @@
-docker run -it -v "c:/data/hyg:/data"  -v "c:/data/m2repo:/root/.m2/repository" livxtrm/hy_build bash

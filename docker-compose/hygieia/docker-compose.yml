@@ -32,7 +32,7 @@ services:
         ipv4_address: 172.16.238.11
         
   db-setup:
-    build: c:/data/hyg/Hygieia/db
+    build: ../../built/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongoroot
       - MONGO_INITDB_ROOT_PASSWORD=mongopass
@@ -40,7 +40,7 @@ services:
       - db
       
   api:
-    build: c:/data/hyg/Hygieia/api
+    build: ../../built/api
     image: hygieia-api
     depends_on:
       - db-setup
@@ -56,7 +56,7 @@ services:
         ipv4_address: 172.16.238.12
   
   api-audit:
-    build: c:/data/hyg/Hygieia/api-audit
+    build: ../../built/api-audit
     image: hygieia-api-audit
     depends_on:
       - db-setup
@@ -64,7 +64,7 @@ services:
       - "8081:8080"
   
   ui:
-    build: c:/data/hyg/Hygieia/UI
+    build: ../../built/UI
     image: hygieia-ui
     depends_on:
       - api
@@ -74,7 +74,7 @@ services:
       API-HOST: api
     
   gitlab-feature-collector:
-    build: c:/data/hyg/Hygieia/collectors/feature/gitlab
+    build: ../../built/collector-gitlab-feature
     image: hygieia-gitlab-feature-collector
     depends_on:
       - db-setup
@@ -86,7 +86,7 @@ services:
       - gitlab_default
       
   gitlab-scm-collector:
-    build: c:/data/hyg/Hygieia/collectors/scm/gitlab
+    build: ../../built/collector-gitlab-scm
     image: hygieia-gitlab-scm-collector
     depends_on:
       - db-setup
@@ -97,7 +97,7 @@ services:
       - gitlab_default
 
   jenkins-build-collector:
-    build: c:/data/hyg/Hygieia/collectors/build/jenkins
+    build: ../../built/collector-jenkins-build
     image: hygieia-jenkins-build-collector
     depends_on:
       - db-setup
@@ -109,7 +109,7 @@ services:
       - jenkins_default
 
   jenkins-codequality-collector:
-    build: c:/data/hyg/Hygieia/collectors/build/jenkins-codequality
+    build: ../../built/collector-jenkins-codequality-build
     image: hygieia-jenkins-codequality-collector
     depends_on:
       - db-setup
@@ -121,7 +121,7 @@ services:
       - jenkins_default
   
   jenkins-cucumber-test-collector:
-    build: c:/data/hyg/Hygieia/collectors/build/jenkins-cucumber
+    build: ../../built/collector-jenkins-cucumber-build
     image: hygieia-jenkins-cucumber-test-collector
     depends_on:
       - db-setup
